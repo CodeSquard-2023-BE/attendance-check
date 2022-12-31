@@ -1,6 +1,13 @@
 plugins {
     id 'java'
 }
+ext {
+    javaMainClass = "com.junho.gradle.exec.GitHubTest.java"
+}
+
+application {
+    mainClassName = javaMainClass
+}
 
 group 'org.junho'
 version '1.0-SNAPSHOT'
