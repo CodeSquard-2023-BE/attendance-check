@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 ext {
-    javaMainClass = "com.junho.gradle.exec.GitHubTest.java"
+    javaMainClass = "com.junho.gradle.exec.GitHubTest"
 }
 
 application {
