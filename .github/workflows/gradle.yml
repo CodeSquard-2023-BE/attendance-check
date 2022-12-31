@@ -34,4 +34,4 @@ jobs:
         arguments: build
 
     - name: pwd
-      run: java GitHubTest.java
+      run: java src/main/java/com/junho/GitHubTest.java
