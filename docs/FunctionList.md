@@ -2,7 +2,7 @@
 ## 깃헙 organization 출석부 만들기
 
 - [x] 토큰 받아 연결
-- [ ] 깃헙 issue받아 아이디만 분리 -> getLogin으로
+- [x] 깃헙 issue받아 아이디만 분리 -> getLogin으로
 - [ ] 마크다운 형식으로 README 파일 만들기 (PrintWriter 설정)
 
 1. open된 issue에 출석했다는 comment를 단 사람들의 login id를 긁어와서 출석체크 현황을 readme.md에 만든다.
