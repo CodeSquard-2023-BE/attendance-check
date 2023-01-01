@@ -20,8 +20,44 @@
 4. readme.md에는 자동으로 날짜가 추가된다.
 
 
-참여자 | 월요일 | 화요일 | 수요일 | 목요일 | 금요일 | 토요일 | 일요일 | 참셕률
-이름1 | v | v| ..
+* 추가하고 싶은 기능 : 요일 옆에 날짜 표시기능 예) 월요일(1/2)
+
+정해야할 것
+> 1. 언제 issue를 closed 되야 하는지
+> 2. issue에 있는 comment를 한번에 긁어 와야함,
+> 3. 월 ~ 일에 있는 comment를 한번에 긁어와 list에 boolean으로 넣어 for문 돌면서 markdown 표 형식 만들기. 
+> 4. 다음 월요일이 되면 reset되어 다시 월요일 부터 시작해야함... shit
+> 
+
+지금 할 수 있는것
+> - issue를 현재 날짜에 맞게끔 title과 body 내용을 설정해 자동 생성기능
+> - comment를 issue마다 가지고 올 수 있는데, issue를 가지고 오는 기준이 closed, opened, all 기준으로 가지고 올 수 있음.
+> - I/O를 통해서 PrintWriter 통해서 markdown 생성해야하는데, 그 시점이 매일 스터디를 끝나는 시점을 기준으로 진행해야 한다.
+> - issue를 일별로 만들어야 하는것은 확실하다. 
+> - 일요일 되면 모든 issue를 closed 시키자. 그리고 opened된 모든 issue를 가져와서 요일 별로 만들자.
+> - 요일별 issue를 각 id마다의 list에 boolean값으로 참석 여부를 추가하자.
+> - 참석한 사람은 true로 하고, 각 날이 지날때 마다 comment가 없으면 default 값은 false로 한다.
+
+
+closed 된 것을 가지고 올때
+ - 다른 사람이 issue를 달 수도 있으니, 내가 닫은 것만 가지고 오기. -> 내가 닫은 기능이 정상적으로 작동 안됨.
+
+Issue 최근 7개 돌면서 comment 마다 사람들 id를 키로, List<boolean> 참석 여부를 value로 가지는 map에 저장하기.
+ - organization에서 member를 가지고 오는 것이 아니라, comment를 기준으로 가지고 오기.
+ > organization을 기준으로 가지고 온다면, organization 등록되어 있지만 실제 참여 안하는 인원이 생각보다 많음.
+ - comment 돌면서 map에 값이 없는 사람이 있으면 put해주는데, value인 list에 다른 사람과 동일하게 크기를 맞춰줘야함
+ - 발견된 이전 까지는 list에 false값으로 세팅하기.
+
+comment를 돌아 만든 map을 바탕으로 markdown 생성하기
+ - 그냥 하면 됨.
+
+string 형으로 생성한 markdown을 PrintWriter를 통해서 markdown 파일 생성하기.
+
+### Trouble shooting 
+![getClosedByMethod](img/getClosedByMethod.png)
+ - `Note that GitHub doesn't always seem to report this information even for an issue that's already closed`
+ - 위에서 볼 수 있듯 내가 가진 issue를 분리 시키고 싶었는데, `getClosedBy`메서드를 통해서 `GHUser`를 정상적으로 불러오지 못했다.
+
 
 
 
