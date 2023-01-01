@@ -3,6 +3,7 @@ package com.junho;
 import org.kohsuke.github.*;
 
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.format.TextStyle;
 import java.util.*;
@@ -15,7 +16,7 @@ public class GitHubTest {
     public static final String ID = "juno-junho";
     public static final String TOKEN = "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";
 //    static LocalDate localDate = LocalDate.now();
-        public static LocalDate localDate = LocalDate.of(2023, 1, 2);
+    public static LocalDate localDate = LocalDate.of(2023, 1, 2);
 
     public static final Map<String, List<Integer>> memberAttendanceRecord = new HashMap<>();
     private static String generateTitle() {
@@ -26,7 +27,7 @@ public class GitHubTest {
         return year + "년 " + month + "월 " + day + "일 " + dayOfWeek + " 스터디 쓰레드";
     }
 
-    public static void main(String[] args) {
+  /*  public static void main(String[] args) {
 
         try {
             // github token으로 연결
@@ -93,17 +94,16 @@ public class GitHubTest {
         }
 
 //        GHOrganization organization = gitHub.getOrganization()
-    }
+    }*/
 
-   /* private String header(int totalNumberOfParticipants) {
+    private String header(int totalNumberOfParticipants) {
         StringBuilder header = new StringBuilder(String.format("| 참여자 (%d) |", totalNumberOfParticipants));
-        *//**
+/*
          * | 참여자 (420) | 1주차 | 2주차 | 3주차 | 참석율 |
          * | --- | --- | --- | --- | --- |
-         *//*
-        List<String> weekDays = Arrays.stream(DayOfWeek.values())
-                .map(i -> i.getDisplayName(TextStyle.FULL, Locale.KOREAN))
-                .collect(Collectors.toList());
+*/
+
+        List<String> weekDays = List.of("월요일", "화요일", "수요일", "목요일", "금요일", "토요일", "일요일");
 
         System.out.println(weekDays);
 
@@ -120,19 +120,38 @@ public class GitHubTest {
         return header.toString();
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args)  {
         GitHubTest gitHubTest = new GitHubTest();
 
-        GitHub gitHub = GitHub.connect(ID, TOKEN);
-        GHRepository repository = gitHub.getRepository("konkuk-tech-course/attendance-checker");
+        GitHub gitHub = null;
+        try {
+            gitHub = GitHub.connect(ID, TOKEN);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            GHRepository repository = gitHub.getRepository("konkuk-tech-course/attendance-checker");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+//        GHRepository repository = gitHub.getRepository("konkuk-tech-course/attendance-checker");
 
         // organization member리스트
-        GHOrganization organization = gitHub.getOrganization("konkuk-tech-course");
-        organization.listMembers().toList().stream().map(GHPerson::getLogin).forEach(i -> memberAttendanceRecord.put(i, new ArrayList<>()));
+        GHOrganization organization = null;
+        try {
+            organization = gitHub.getOrganization("konkuk-tech-course");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            organization.listMembers().toList().stream().map(GHPerson::getLogin).forEach(i -> memberAttendanceRecord.put(i, new ArrayList<>()));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
 //        usernames= organization.listMembers().toList().stream().map(GHPerson::getLogin).collect(Collectors.toSet());
         int totalNumberOfMember = memberAttendanceRecord.size();
 
-        List<GHIssue> issues = repository.getIssues(GHIssueState.OPEN);
+//        List<GHIssue> issues = repository.getIssues(GHIssueState.OPEN);
 
 
 
@@ -143,5 +162,5 @@ public class GitHubTest {
 
 
 
-    }*/
+    }
 }
