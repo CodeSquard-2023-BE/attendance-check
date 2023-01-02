@@ -50,6 +50,7 @@ Issue 최근 7개 돌면서 comment 마다 사람들 id를 키로, List<boolean>
 
 comment를 돌아 만든 map을 바탕으로 markdown 생성하기
  - 그냥 하면 됨.
+ - 신경써야할것 : issue 생성시 body로 comment가 내 계정으로 자동 생성되는데, 나는 그럼 출석률 계산을 못하는 것인가?
 
 string 형으로 생성한 markdown을 PrintWriter를 통해서 markdown 파일 생성하기.
 
