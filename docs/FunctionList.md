@@ -54,6 +54,9 @@ comment를 돌아 만든 map을 바탕으로 markdown 생성하기
 
 string 형으로 생성한 markdown을 PrintWriter를 통해서 markdown 파일 생성하기.
 
+### github 내부 설정
+ - issue 작성 권한 나로 설정. issue closed 방지를 위한 권한 나로 설정.
+
 ### Trouble shooting 
 ![getClosedByMethod](img/getClosedByMethod.png)
  - `Note that GitHub doesn't always seem to report this information even for an issue that's already closed`
