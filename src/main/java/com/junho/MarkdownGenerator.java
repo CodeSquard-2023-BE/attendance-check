@@ -15,6 +15,8 @@ import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static com.junho.constant.DayOfWeek.DAY_OF_WEEK_COUNT;
+
 // TODO: IssueGenerator에서 Map에 담은 issue를 돌면서 comment마다 빼서 markdown 만들기
 public class MarkdownGenerator {
     public static final Map<DayOfWeek, GHIssue> currentWeekIssues = new EnumMap<>(DayOfWeek.class);
@@ -29,7 +31,7 @@ public class MarkdownGenerator {
 
             // TODO: CLOSED 된 최근 7개만 가지고 온다.
             List<GHIssue> issues = repository.getIssues(GHIssueState.ALL).stream()
-                    .limit(DayOfWeek.DAY_OF_WEEK_COUNT)
+                    .limit(DAY_OF_WEEK_COUNT)
                     .collect(Collectors.toList());
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
@@ -45,7 +47,6 @@ public class MarkdownGenerator {
                 DayOfWeek matchedDay = DayOfWeek.findByDay(dayOfWeek);
 
                 currentWeekIssues.put(matchedDay, issue);
-
             }
             //TODO: map에 잘 담겼는지 test
             currentWeekIssues.forEach((key, value) -> {
@@ -84,11 +85,8 @@ public class MarkdownGenerator {
                 throw new RuntimeException(e);
             }
         }
-
+        // TODO: participants 이름 순으로 정렬
         participants.sort(Comparator.comparing(Participant::getUsername));
-        /*System.out.println("이름 출력");
-        participants.forEach(i -> System.out.println(i.getUsername()));
-        participants.forEach(i -> System.out.println(i.getAttendance()));*/
     }
 
     private Participant findMember(Participant member) {
@@ -100,34 +98,29 @@ public class MarkdownGenerator {
 
     private String createTable() {
 
-        StringBuilder header = new StringBuilder(String.format("| 참여자 (%d) |", participants.size()));
+        StringBuilder table = new StringBuilder(String.format("| 참여자 (%d) |", participants.size()));
         /*
          * | 참여자 (420) | 1주차 | 2주차 | 3주차 | 참석율 |
          * | --- | --- | --- | --- | --- |
          */
+
         List<String> dayOfWeeks = Arrays.stream(DayOfWeek.values())
                 .map(DayOfWeek::toString)
                 .collect(Collectors.toList());
-        
         //TODO: 기본 테이블 형식 세팅
         for (String dayOfWeek : dayOfWeeks) {
-            header.append(String.format(" %s |", dayOfWeek));
+            table.append(String.format(" %s |", dayOfWeek));
         }
-        header.append(" 참석율 |\n");
-        header.append("|:---:".repeat(dayOfWeeks.size() + 2));
-        header.append("|\n");
+        table.append(" 참석율 |\n");
+        table.append("|:---:".repeat(dayOfWeeks.size() + 2));
+        table.append("|\n");
         
         //TODO: participant마다 돌면서 이름과 참석 체크, 참석률 체크
         for (Participant participant : participants) {
             String username = participant.getUsername();
             EnumMap<DayOfWeek, Boolean> attendance = participant.getAttendance();
-            System.out.println("username = " + username);
-            System.out.println("attendance = " + attendance);
 
-//            System.out.println("username = " + username);
-//            System.out.println("attendance = " + attendance);
-
-            header.append(String.format("| %s ", username));
+            table.append(String.format("| %s ", username));
 
             //TODO: 월, 화, 수, 목, 금, 토, 일 돌면서 체크 (일단위로 한다면 현재 날짜까지만 돌아야함)
             LocalDate now = LocalDate.now();
@@ -137,21 +130,23 @@ public class MarkdownGenerator {
                 index++;
                 //  TODO: 일단위로 한다면 현재 요일시 Break
                 if (attendance.containsKey(day)) {
-                    header.append("|:white_check_mark:");
+                    table.append("|:white_check_mark:");
                 }
                 else{
-                    header.append("|:x:");
+                    table.append("|:x:");
                 }
                 if (day.toString().equals(dayofWeekToday)){
                     break;
                 }
             }
-            header.append("| ".repeat(Math.max(0, DayOfWeek.DAY_OF_WEEK_COUNT - index)));
-            header.append(String.format("| %.2f%% |\n", participant.getRate()));
+            //TODO: 현재 이후일은 표시 X
+            table.append("| ".repeat(Math.max(0, DAY_OF_WEEK_COUNT - index)));
+            table.append(String.format("| %.2f%% |\n", participant.getRate()));
         }
-        return header.toString();
+        return table.toString();
     }
-
+    
+    //TODO: 주차별 출석부 생성
     void createMarkdownFile(String table) throws IOException {
         final int weekOfYear = LocalDate.now().get(ChronoField.ALIGNED_WEEK_OF_YEAR);
         String filepath = "docs/attendance-rate/";
@@ -164,6 +159,7 @@ public class MarkdownGenerator {
         writer.print(table);
         writer.close();
 
+        //TODO: README를 최근 출석부로 변환
         updateReadMeWithCurrentAttendance(pathAndName);
     }
 
@@ -179,8 +175,6 @@ public class MarkdownGenerator {
     }
 
     public static void main(String[] args) {
-/*        Map<Integer, GHIssue> currentWeekIssues = IssueShutter.currentWeekIssues;
-        GHIssue ghIssue = currentWeekIssues.get(1);*/
         MarkdownGenerator generator = new MarkdownGenerator();
         generator.setCurrentWeekIssues();
         generator.setParticipants();

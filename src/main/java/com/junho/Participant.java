@@ -5,6 +5,8 @@ import com.junho.constant.DayOfWeek;
 import java.util.EnumMap;
 import java.util.Objects;
 
+import static com.junho.constant.DayOfWeek.DAY_OF_WEEK_COUNT;
+
 public class Participant {
     private final String username;
 
@@ -20,7 +22,7 @@ public class Participant {
         long count = this.attendance.values().stream()
                 .filter(value -> value)
                 .count();
-        return (double) (count * 100) / DayOfWeek.DAY_OF_WEEK_COUNT;
+        return (double) (count * 100) / DAY_OF_WEEK_COUNT;
     }
 
     public void checkAttendance(DayOfWeek day) {
