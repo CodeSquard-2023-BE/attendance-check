@@ -12,6 +12,7 @@ public enum DayOfWeek {
     SUNDAY("일요일"),
     ;
 
+    public static final int DAY_OF_WEEK_COUNT = 7;
     private final String dayOfTheWeek;
 
     DayOfWeek(String dayOfTheWeek) {
@@ -26,7 +27,7 @@ public enum DayOfWeek {
     }
 
     private boolean isEqualTo(String day) {
-        return dayOfTheWeek.equals(day);
+        return toString().equals(day);
     }
 
     @Override
