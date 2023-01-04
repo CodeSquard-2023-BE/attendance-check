@@ -54,6 +54,17 @@ comment를 돌아 만든 map을 바탕으로 markdown 생성하기
 
 string 형으로 생성한 markdown을 PrintWriter를 통해서 markdown 파일 생성하기.
 
+ - [ ] 매일 08시에 issue 자동생성으로 만들 것.
+ - [ ] 그날 생성된 issue는 당일 23시에 closed될 것.
+ - [ ] 매일 23시 closed 되기 전에 markdown 형식으로 출석부를 최신화 시킬것.
+
+그래서 생성일이 월요일 것인 issue부터 긁어 와야함. 
+그리고 당일까지만 돌면서 comment check 해야함.
+
+### gitignore 설정
+ - [ ] .idea, .gradle, out 폴더 자원 관리 배제 
+ - [ ] token 값과 github id를 담은 `PrivateInfo` 클래스 gitignore
+
 ### github 내부 설정
  - issue 작성 권한 나로 설정. issue closed 방지를 위한 권한 나로 설정.
 
