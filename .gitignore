@@ -2,4 +2,4 @@
 .gradle
 out
 
-Private*.java
+src/main/java/com/junho/constant/PrivateInfo.java
