@@ -25,68 +25,87 @@ public class MarkdownGenerator {
 
     private void setCurrentWeekIssues() {
         try {
-            GitHub gitHub = GitHub.connect(PrivateInfo.ID, PrivateInfo.TOKEN);
-            GHRepository repository = gitHub.getRepository("konkuk-tech-course/attendance-checker");
+            GHRepository repository = getRepositoryFromGitHub();
+            List<GHIssue> issues = getCurrentSevenIssues(repository);
+            setIssueWithMatchedDay(issues);
 
-
-            // TODO: CLOSED 된 최근 7개만 가지고 온다.
-            List<GHIssue> issues = repository.getIssues(GHIssueState.ALL).stream()
-                    .limit(DAY_OF_WEEK_COUNT)
-                    .collect(Collectors.toList());
-
-            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-
-            for (GHIssue issue : issues) {
-                // TODO: 열린 날짜 계산 -> 월요일 부터 하나씩 가져오기.
-                Date createdAt = issue.getCreatedAt();
-                // TODO: Date에서 요일 추출하기. (분리 예정)
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(createdAt);
-                String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.KOREAN);
-
-                DayOfWeek matchedDay = DayOfWeek.findByDay(dayOfWeek);
-
-                currentWeekIssues.put(matchedDay, issue);
-            }
             //TODO: map에 잘 담겼는지 test
-            currentWeekIssues.forEach((key, value) -> {
-                try {
-                    System.out.println(key + ": " + dateFormat.format(value.getCreatedAt()));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
+            printCurrentWeekIssues();
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("issue를 담는데 예외가 발생했습니다.", e);
         }
     }
 
-    private void setParticipants() {
-        for (Map.Entry<DayOfWeek, GHIssue> entry : currentWeekIssues.entrySet()) {
-            DayOfWeek day = entry.getKey();
-            GHIssue gitHubIssue = entry.getValue();
+    private GHRepository getRepositoryFromGitHub() throws IOException {
+        GitHub gitHub = GitHub.connect(PrivateInfo.ID, PrivateInfo.TOKEN);
+        return gitHub.getRepository("konkuk-tech-course/attendance-checker");
+    }
+
+    private List<GHIssue> getCurrentSevenIssues(GHRepository repository) throws IOException {
+        return repository.getIssues(GHIssueState.ALL).stream()
+                .limit(DAY_OF_WEEK_COUNT)
+                .collect(Collectors.toList());
+    }
+
+    private void setIssueWithMatchedDay(List<GHIssue> issues) throws IOException {
+        for (GHIssue issue : issues) {
+            DayOfWeek matchedDay = getCreatedDate(issue);
+            currentWeekIssues.put(matchedDay, issue);
+        }
+    }
+
+    private DayOfWeek getCreatedDate(GHIssue issue) throws IOException {
+        Date createdAt = issue.getCreatedAt();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(createdAt);
+        String dayOfWeek = calendar.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.LONG, Locale.KOREAN);
+        return DayOfWeek.findByDay(dayOfWeek);
+    }
+
+    private void printCurrentWeekIssues() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        currentWeekIssues.forEach((key, value) -> {
             try {
-                for (GHIssueComment comment : gitHubIssue.getComments()) {
-                    final String userId = comment.getUser().getLogin();
-                    final Participant member = new Participant(userId);
-
-                    // TODO: 기존 존재 회원 출석체크
-                    if (participants.contains(member)) {
-                        Participant participant = findMember(member);
-                        participant.checkAttendance(day);
-                        continue;
-                    }
-
-                    // TODO: 새로운 회원 출석체크
-                    participants.add(member);
-                    member.checkAttendance(day);
-                }
+                System.out.println(key + ": " + dateFormat.format(value.getCreatedAt()));
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                throw new RuntimeException("issue를 담는데 실패했습니다.", e);
             }
+        });
+    }
+
+    private void setParticipants() throws IOException {
+        for (Map.Entry<DayOfWeek, GHIssue> entry : currentWeekIssues.entrySet()) {
+            final DayOfWeek day = entry.getKey();
+            final GHIssue gitHubIssue = entry.getValue();
+            setParticipantsWithComments(day, gitHubIssue);
         }
         // TODO: participants 이름 순으로 정렬
-        participants.sort(Comparator.comparing(Participant::getUsername));
+        sortParticipantsByUsername();
+    }
+
+    private void setParticipantsWithComments(DayOfWeek day, GHIssue gitHubIssue) throws IOException {
+        for (GHIssueComment comment : gitHubIssue.getComments()) {
+            final String userId = comment.getUser().getLogin();
+            final Participant member = new Participant(userId);
+
+            // TODO: 기존 존재 회원 출석체크
+            if (memberAlreadyExists(member)) {
+                checkAttendance(day, member);
+                continue;
+            }
+            // TODO: 새로운 회원 출석체크
+            participants.add(member);
+            member.checkAttendance(day);
+        }
+    }
+
+    private boolean memberAlreadyExists(Participant member) {
+        return participants.contains(member);
+    }
+
+    private void checkAttendance(DayOfWeek day, Participant member) {
+        Participant participant = findMember(member);
+        participant.checkAttendance(day);
     }
 
     private Participant findMember(Participant member) {
@@ -94,6 +113,10 @@ public class MarkdownGenerator {
                 .filter(i -> i.equals(member))
                 .findAny()
                 .orElseThrow();
+    }
+
+    private void sortParticipantsByUsername() {
+        participants.sort(Comparator.comparing(Participant::getUsername));
     }
 
     private String createTable() {
@@ -114,7 +137,7 @@ public class MarkdownGenerator {
         table.append(" 참석율 |\n");
         table.append("|:---:".repeat(dayOfWeeks.size() + 2));
         table.append("|\n");
-        
+
         //TODO: participant마다 돌면서 이름과 참석 체크, 참석률 체크
         for (Participant participant : participants) {
             String username = participant.getUsername();
@@ -131,11 +154,10 @@ public class MarkdownGenerator {
                 //  TODO: 일단위로 한다면 현재 요일시 Break
                 if (attendance.containsKey(day)) {
                     table.append("|:white_check_mark:");
-                }
-                else{
+                } else {
                     table.append("|:x:");
                 }
-                if (day.toString().equals(dayofWeekToday)){
+                if (day.toString().equals(dayofWeekToday)) {
                     break;
                 }
             }
@@ -145,7 +167,7 @@ public class MarkdownGenerator {
         }
         return table.toString();
     }
-    
+
     //TODO: 주차별 출석부 생성
     void createMarkdownFile(String table) throws IOException {
         final int weekOfYear = LocalDate.now().get(ChronoField.ALIGNED_WEEK_OF_YEAR);
@@ -155,7 +177,7 @@ public class MarkdownGenerator {
         FileWriter fileWriter = new FileWriter(pathAndName);
 
         PrintWriter writer = new PrintWriter(fileWriter);
-        writer.print("## :pushpin: "+weekOfYear+"주차 출석체크\n\n");
+        writer.print("## :pushpin: " + weekOfYear + "주차 출석체크\n\n");
         writer.print(table);
         writer.close();
 
@@ -175,13 +197,14 @@ public class MarkdownGenerator {
     }
 
     public static void main(String[] args) {
-        MarkdownGenerator generator = new MarkdownGenerator();
-        generator.setCurrentWeekIssues();
-        generator.setParticipants();
-
-        String table = generator.createTable();
-        System.out.println(table);
         try {
+            MarkdownGenerator generator = new MarkdownGenerator();
+            generator.setCurrentWeekIssues();
+            generator.setParticipants();
+
+            String table = generator.createTable();
+            System.out.println(table);
+
             generator.createMarkdownFile(table);
         } catch (IOException e) {
             throw new RuntimeException(e);
