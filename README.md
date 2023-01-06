@@ -5,6 +5,6 @@
 | Ha0Day |:x:|:x:|:x:|:x:|:x:| | | 14.29% |
 | Yunsik-Choi |:x:|:white_check_mark:|:x:|:x:|:x:| | | 14.29% |
 | endlessmomo |:x:|:x:|:white_check_mark:|:x:|:x:| | | 14.29% |
-| juno-junho |:x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:x:| | | 57.14% |
-| khyojun |:x:|:x:|:white_check_mark:|:x:|:x:| | | 28.57% |
-| yummygyudon |:x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:x:| | | 57.14% |
+| juno-junho |:x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:| | | 71.43% |
+| khyojun |:x:|:x:|:white_check_mark:|:x:|:white_check_mark:| | | 42.86% |
+| yummygyudon |:x:|:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:| | | 71.43% |
