@@ -61,9 +61,11 @@ string 형으로 생성한 markdown을 PrintWriter를 통해서 markdown 파일 
 그래서 생성일이 월요일 것인 issue부터 긁어 와야함. 
 그리고 당일까지만 돌면서 comment check 해야함.
 
+- [ ] `23. 01. 06` update 내용: x주차 출석체크 옆에 기간 날짜로 표기하기.
+> - [ ] 가능하면 월요일 ~ 일요일 table header 또한 `x요일(mm월 dd일)` 형식으로 표기하기.
 ### gitignore 설정
- - [ ] .idea, .gradle, out 폴더 자원 관리 배제 
- - [ ] token 값과 github id를 담은 `PrivateInfo` 클래스 gitignore
+ - [x] .idea, .gradle, out 폴더 자원 관리 배제 
+ - [x] token 값과 github id를 담은 `PrivateInfo` 클래스 gitignore
 
 ### github 내부 설정
  - issue 작성 권한 나로 설정. issue closed 방지를 위한 권한 나로 설정.
