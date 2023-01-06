@@ -4,6 +4,7 @@ plugins {
 
 group 'org.junho'
 version '1.0-SNAPSHOT'
+apply plugin: 'java'
 
 repositories {
     mavenCentral()

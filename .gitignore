@@ -1,6 +1,6 @@
 .idea
 .gradle
 out
-
+build
 ##Private Information (GitHub ID & TOKEN)
 src/main/java/com/junho/constant/PrivateInfo.java
