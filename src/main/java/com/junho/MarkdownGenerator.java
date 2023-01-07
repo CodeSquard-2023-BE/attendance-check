@@ -10,8 +10,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
+import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,10 +25,19 @@ public class MarkdownGenerator {
 
     public final List<Participant> participants = new ArrayList<>();
 
+    private static final LocalDate now = LocalDate.now();
+
     private void setCurrentWeekIssues() {
         try {
             GHRepository repository = getRepositoryFromGitHub();
             List<GHIssue> issues = getCurrentSevenIssues(repository);
+            issues.forEach(i -> {
+                try {
+                    System.out.println(i.getCreatedAt());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
             setIssueWithMatchedDay(issues);
 
             //TODO: map에 잘 담겼는지 test
@@ -50,7 +61,12 @@ public class MarkdownGenerator {
     private void setIssueWithMatchedDay(List<GHIssue> issues) throws IOException {
         for (GHIssue issue : issues) {
             DayOfWeek matchedDay = getCreatedDate(issue);
+            System.out.println("matchedDay = " + matchedDay);
             currentWeekIssues.put(matchedDay, issue);
+            // TODO: 2주차 부터 MONDAY로 변경 예정 (1월 9일 변경 예정)
+            if (matchedDay == DayOfWeek.SUNDAY){
+                break;
+            }
         }
     }
 
@@ -63,7 +79,7 @@ public class MarkdownGenerator {
     }
 
     private void printCurrentWeekIssues() {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM월 dd일");
         currentWeekIssues.forEach((key, value) -> {
             try {
                 System.out.println(key + ": " + dateFormat.format(value.getCreatedAt()));
@@ -74,13 +90,16 @@ public class MarkdownGenerator {
     }
 
     private void setParticipants() throws IOException {
+        System.out.println("currentWeekIssues = " + currentWeekIssues);
         for (Map.Entry<DayOfWeek, GHIssue> entry : currentWeekIssues.entrySet()) {
             final DayOfWeek day = entry.getKey();
             final GHIssue gitHubIssue = entry.getValue();
+            System.out.println("day = " + day);
             setParticipantsWithComments(day, gitHubIssue);
         }
         // TODO: participants 이름 순으로 정렬
         sortParticipantsByUsername();
+        participants.forEach( i -> System.out.println(i.getUsername() + i.getAttendance()));
     }
 
     private void setParticipantsWithComments(DayOfWeek day, GHIssue gitHubIssue) throws IOException {
@@ -142,11 +161,12 @@ public class MarkdownGenerator {
         for (Participant participant : participants) {
             String username = participant.getUsername();
             EnumMap<DayOfWeek, Boolean> attendance = participant.getAttendance();
+            System.out.println("username = " + username);
+            System.out.println("attendance = " + attendance);
 
             table.append(String.format("| %s ", username));
 
             //TODO: 월, 화, 수, 목, 금, 토, 일 돌면서 체크 (일단위로 한다면 현재 날짜까지만 돌아야함)
-            LocalDate now = LocalDate.now();
             String dayofWeekToday = now.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.KOREAN);
             int index = 0;
             for (DayOfWeek day : DayOfWeek.values()) {
@@ -170,19 +190,29 @@ public class MarkdownGenerator {
 
     //TODO: 주차별 출석부 생성
     void createMarkdownFile(String table) throws IOException {
-        final int weekOfYear = LocalDate.now().get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+        final int weekOfYear = now.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
         String filepath = "docs/attendance-rate/";
         String fileName = weekOfYear + "-week-attendance-check.md";
         String pathAndName = filepath.concat(fileName);
-        FileWriter fileWriter = new FileWriter(pathAndName);
 
+        FileWriter fileWriter = new FileWriter(pathAndName);
         PrintWriter writer = new PrintWriter(fileWriter);
-        writer.print("## :pushpin: " + weekOfYear + "주차 출석체크\n\n");
+        writer.print(getTitle(weekOfYear));
         writer.print(table);
         writer.close();
 
         //TODO: README를 최근 출석부로 변환
         updateReadMeWithCurrentAttendance(pathAndName);
+    }
+
+    private String getTitle(int weekOfYear) {
+        LocalDate firstMonday = now.with(TemporalAdjusters.previousOrSame(java.time.DayOfWeek.MONDAY));
+        LocalDate thisSunday = firstMonday.plusDays(6);
+        String monday = firstMonday.format(DateTimeFormatter.ofPattern("MM월 dd일"));
+        String sunday = thisSunday.format(DateTimeFormatter.ofPattern("MM월 dd일"));
+
+        String period = "(" + monday + " ~ " + sunday + ")";
+        return "## :pushpin: " + weekOfYear + "주차 출석체크 "+period+"\n\n";
     }
 
     private void updateReadMeWithCurrentAttendance(String pathName) throws IOException {
