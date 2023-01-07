@@ -212,7 +212,7 @@ public class MarkdownGenerator {
         String sunday = thisSunday.format(DateTimeFormatter.ofPattern("MM월 dd일"));
 
         String period = "(" + monday + " ~ " + sunday + ")";
-        return "## :pushpin: " + weekOfYear + "주차 출석체크 "+period+"\n\n";
+        return "## :pushpin: " + weekOfYear + "주차 출석 현황 "+period+"\n\n";
     }
 
     private void updateReadMeWithCurrentAttendance(String pathName) throws IOException {
