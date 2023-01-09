@@ -22,10 +22,9 @@ import static com.junho.constant.DayOfWeek.DAY_OF_WEEK_COUNT;
 // TODO: IssueGenerator에서 Map에 담은 issue를 돌면서 comment마다 빼서 markdown 만들기
 public class MarkdownGenerator {
     public static final Map<DayOfWeek, GHIssue> currentWeekIssues = new EnumMap<>(DayOfWeek.class);
-
+    private static final LocalDate now = LocalDate.now();
     public final List<Participant> participants = new ArrayList<>();
 
-    private static final LocalDate now = LocalDate.now();
 
     private void setCurrentWeekIssues() {
         try {
@@ -63,8 +62,8 @@ public class MarkdownGenerator {
             DayOfWeek matchedDay = getCreatedDate(issue);
             System.out.println("matchedDay = " + matchedDay);
             currentWeekIssues.put(matchedDay, issue);
-            // TODO: 2주차 부터 MONDAY로 변경 예정 (1월 9일 변경 예정)
-            if (matchedDay == DayOfWeek.SUNDAY){
+            //TODO: 최근 날짜 부터 ISSUE를 가져오는데 MONDAY까지만 가져오기
+            if (matchedDay == DayOfWeek.MONDAY){
                 break;
             }
         }
