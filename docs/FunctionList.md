@@ -1,9 +1,9 @@
 
-## 깃헙 organization 출석부 만들기
+### 깃헙 repository의 comment를 활용한 출석체크
 
 - [x] 토큰 받아 연결
 - [x] 깃헙 issue받아 아이디만 분리 -> getLogin으로
-- [ ] 마크다운 형식으로 README 파일 만들기 (PrintWriter 설정)
+- [x] 마크다운 형식으로 README 파일 만들기 (PrintWriter 설정)
 
 1. open된 issue에 출석했다는 comment를 단 사람들의 login id를 긁어와서 출석체크 현황을 readme.md에 만든다.
  - [ ] opened되어 있는 issue가 하나 밖에 없는지 예외체크
@@ -27,7 +27,6 @@
 > 2. issue에 있는 comment를 한번에 긁어 와야함,
 > 3. 월 ~ 일에 있는 comment를 한번에 긁어와 list에 boolean으로 넣어 for문 돌면서 markdown 표 형식 만들기. 
 > 4. 다음 월요일이 되면 reset되어 다시 월요일 부터 시작해야함... shit
-> 
 
 지금 할 수 있는것
 > - issue를 현재 날짜에 맞게끔 title과 body 내용을 설정해 자동 생성기능
@@ -61,20 +60,36 @@ string 형으로 생성한 markdown을 PrintWriter를 통해서 markdown 파일 
 그래서 생성일이 월요일 것인 issue부터 긁어 와야함. 
 그리고 당일까지만 돌면서 comment check 해야함.
 
-- [ ] `23. 01. 06` update 내용: x주차 출석체크 옆에 기간 날짜로 표기하기.
-> - [ ] 가능하면 월요일 ~ 일요일 table header 또한 `x요일(mm월 dd일)` 형식으로 표기하기.
+- [x] `23. 01. 06` update 내용: x주차 출석체크 옆에 기간 날짜로 표기하기.
+- [ ] 각 user image를 삽입하는 것... 해보기
 ### gitignore 설정
  - [x] .idea, .gradle, out 폴더 자원 관리 배제 
  - [x] token 값과 github id를 담은 `PrivateInfo` 클래스 gitignore
 
 ### github 내부 설정
- - issue 작성 권한 나로 설정. issue closed 방지를 위한 권한 나로 설정.
+ - issue 작성 권한 나로 설정. issue closed 방지를 위한 권한 나로 설정. -> 기능이 없는것 같음.
 
-### Trouble shooting 
+### 23. 01. 07 배포 
+ - [ ] aws lambda를 이용한 cron 기능 사용
+ - [ ] shell script를 이용한 git commit 및 push 자동화
+
+### 23. 01. 09
+ - 서버를 EC2나 Elastic beanstalk를 사용해서 계속 띄우기에는 물론 무료이지만 비 효율적이라는 생각이 들었다.
+ - 내가 원하는 기능은 특정 자바 파일의 메서드가 일정 시간에 실행되는 cron job을 원하는 것이다
+ - 그래서 찾은 방법이 AWS에 serverless Lambda라는 기능을 찾았다.
+ - 그런데 어떻게 사용하는지 정확하게 모르는 상황. event를 사용해야 하는데..
+ - 그리고 java 11은 런타임을 지원하지 않는다. 어떻게 해야하지?
+ - 각 issue 생성기능과 shutter기능, markdowngenerator기능을 각각의 gradle을 통해서 관리해야하는 것인지..
+ - 그리고 md파일을 생성한 것을 github repository에 자동으로 push 할 수 있는지.. 고민이다.
+ - 
+
+### Trouble shooting1 
 ![getClosedByMethod](img/getClosedByMethod.png)
  - `Note that GitHub doesn't always seem to report this information even for an issue that's already closed`
  - 위에서 볼 수 있듯 내가 가진 issue를 분리 시키고 싶었는데, `getClosedBy`메서드를 통해서 `GHUser`를 정상적으로 불러오지 못했다.
 
+### Trouble Shooting 2
+ - aws lambda를 사용하는 과정에서 encoding 관련 한글이 깨지는 issue
 
 
 
