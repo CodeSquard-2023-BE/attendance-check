@@ -14,6 +14,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.TextStyle;
 import java.time.temporal.ChronoField;
 import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -189,7 +190,8 @@ public class MarkdownGenerator {
 
     //TODO: 주차별 출석부 생성
     void createMarkdownFile(String table) throws IOException {
-        final int weekOfYear = now.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+//        final int weekOfYear = now.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+        final int weekOfYear = now.get(WeekFields.ISO.weekOfYear());
         String filepath = "docs/attendance-rate/";
         String fileName = weekOfYear + "-week-attendance-check.md";
         String pathAndName = filepath.concat(fileName);

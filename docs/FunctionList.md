@@ -91,5 +91,13 @@ string 형으로 생성한 markdown을 PrintWriter를 통해서 markdown 파일 
 ### Trouble Shooting 2
  - aws lambda를 사용하는 과정에서 encoding 관련 한글이 깨지는 issue
 
+### Trouble Shooting 3 (2023. 1. 15)
+- 2023년 1월 15일을 3주차로 인식함. -> `WeekFields.ISO.weekOfYear()`로 변경
+```java
+final int weekOfYear1 = now.get(ChronoField.ALIGNED_WEEK_OF_YEAR);
+final int weekOfYear2 = now.get(WeekFields.ISO.weekOfYear());
+```
+
+
 
 
