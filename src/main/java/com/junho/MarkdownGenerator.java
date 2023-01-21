@@ -33,7 +33,7 @@ public class MarkdownGenerator {
             List<GHIssue> issues = getCurrentSevenIssues(repository);
             issues.forEach(i -> {
                 try {
-                    System.out.println(i.getCreatedAt());
+                    System.out.println(i + " : " + i.getCreatedAt());
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
@@ -53,7 +53,7 @@ public class MarkdownGenerator {
     }
 
     private List<GHIssue> getCurrentSevenIssues(GHRepository repository) throws IOException {
-        return repository.getIssues(GHIssueState.ALL).stream()
+        return repository.getIssues(GHIssueState.CLOSED).stream()
                 .limit(DAY_OF_WEEK_COUNT)
                 .collect(Collectors.toList());
     }
