@@ -49,7 +49,7 @@ public class MarkdownGenerator {
 
     private GHRepository getRepositoryFromGitHub() throws IOException {
         GitHub gitHub = GitHub.connect(PrivateInfo.ID, PrivateInfo.TOKEN);
-        return gitHub.getRepository("konkuk-tech-course/attendance-checker");
+        return gitHub.getRepository("CodeSquard-2023-BE/Submission-Spring");
     }
 
     private List<GHIssue> getCurrentSevenIssues(GHRepository repository) throws IOException {
@@ -140,7 +140,7 @@ public class MarkdownGenerator {
 
     private String createTable() {
 
-        StringBuilder table = new StringBuilder(String.format("| 참여자 (%d) |", participants.size()));
+        StringBuilder table = new StringBuilder(String.format("| 제출자 (%d) |", participants.size()));
         /*
          * | 참여자 (420) | 1주차 | 2주차 | 3주차 | 참석율 |
          * | --- | --- | --- | --- | --- |
@@ -153,7 +153,7 @@ public class MarkdownGenerator {
         for (String dayOfWeek : dayOfWeeks) {
             table.append(String.format(" %s |", dayOfWeek));
         }
-        table.append(" 참석율 |\n");
+        table.append(" 제출량 |\n");
         table.append("|:---:".repeat(dayOfWeeks.size() + 2));
         table.append("|\n");
 
@@ -213,7 +213,7 @@ public class MarkdownGenerator {
         String sunday = thisSunday.format(DateTimeFormatter.ofPattern("MM월 dd일"));
 
         String period = "(" + monday + " ~ " + sunday + ")";
-        return "## :pushpin: " + weekOfYear + "주차 출석 현황 "+period+"\n\n";
+        return "## :pushpin: " + weekOfYear + "주차 제출 현황 "+period+"\n\n";
     }
 
     private void updateReadMeWithCurrentAttendance(String pathName) throws IOException {

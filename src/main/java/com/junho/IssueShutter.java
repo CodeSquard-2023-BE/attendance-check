@@ -28,7 +28,7 @@ public class IssueShutter {
 
     private GHRepository getRepositoryFromGitHub() throws IOException {
         GitHub gitHub = GitHub.connect(PrivateInfo.ID, PrivateInfo.TOKEN);
-        return gitHub.getRepository("konkuk-tech-course/attendance-checker");
+        return gitHub.getRepository("CodeSquard-2023-BE/Submission-Spring");
     }
 
     private boolean checkIfMoreThanOneIssuesExist(List<GHIssue> openedIssue) {
