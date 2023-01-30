@@ -49,7 +49,7 @@ public class MarkdownGenerator {
 
     private GHRepository getRepositoryFromGitHub() throws IOException {
         GitHub gitHub = GitHub.connect(PrivateInfo.ID, PrivateInfo.TOKEN);
-        return gitHub.getRepository("CodeSquard-2023-BE/Submission-Spring");
+        return gitHub.getRepository("CodeSquard-2023-BE/attendance-check");
     }
 
     private List<GHIssue> getCurrentSevenIssues(GHRepository repository) throws IOException {
