@@ -38,7 +38,7 @@ public class IssueGenerator {
     private String generateIssueBody() {
         String message = " made by : juno-junho😃👍🏻\n {0} \n{1}";
         String location = "강의 : 김영한의 스프링";
-        String notice = "제출 확인을 위해 comment를 달아주세요😊";
+        String notice = "수강 완료 시 comment를 달아주세요😊";
         return MessageFormat.format(message, location, notice);
     }
 
