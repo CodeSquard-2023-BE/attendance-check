@@ -4,6 +4,6 @@
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | Ojeegu |:x:|:white_check_mark:|:x:| | | | | 14.29% |
 | chunghye98 |:x:|:white_check_mark:|:x:| | | | | 14.29% |
-| jinny-l |:white_check_mark:|:white_check_mark:|:x:| | | | | 28.57% |
-| ninaaano |:x:|:white_check_mark:|:x:| | | | | 14.29% |
+| jinny-l |:white_check_mark:|:white_check_mark:|:white_check_mark:| | | | | 42.86% |
+| ninaaano |:x:|:white_check_mark:|:white_check_mark:| | | | | 28.57% |
 | road-jin |:x:|:white_check_mark:|:x:| | | | | 14.29% |
