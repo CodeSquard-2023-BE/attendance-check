@@ -4,6 +4,6 @@
 |:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
 | JJONSOO |:white_check_mark:|:white_check_mark:|:x:|:x:| | | | 28.57% |
 | chunghye98 |:x:|:x:|:white_check_mark:|:x:| | | | 14.29% |
-| jinny-l |:white_check_mark:|:white_check_mark:|:white_check_mark:|:x:| | | | 42.86% |
+| jinny-l |:white_check_mark:|:white_check_mark:|:white_check_mark:|:white_check_mark:| | | | 57.14% |
 | ninaaano |:x:|:white_check_mark:|:x:|:x:| | | | 14.29% |
 | road-jin |:x:|:white_check_mark:|:x:|:x:| | | | 14.29% |
